@@ -1,0 +1,60 @@
+import sqlite3
+
+# Connect to the database (or create one if it doesn't exist)
+conn = sqlite3.connect('example.db')
+cursor = conn.cursor()
+
+# 1. DDL Commands
+
+# Create a new table
+cursor.execute('''CREATE TABLE IF NOT EXISTS Employees (
+                  EmployeeID INT PRIMARY KEY,
+                  FirstName TEXT,
+                  LastName TEXT,
+                  Department TEXT,
+                  Salary REAL,
+                  DateOfJoining DATE)''')
+
+# Alter the table to add a new column
+cursor.execute('''ALTER TABLE Employees ADD COLUMN IF NOT EXISTS DateOfJoining DATE''')
+
+# 2. DML Commands
+
+# Insert data into the Employees table
+cursor.execute('''INSERT INTO Employees (EmployeeID, FirstName, LastName, Department, Salary, DateOfJoining)
+                  VALUES (1, 'John', 'Doe', 'HR', 50000.00, '2023-01-15')''')
+cursor.execute('''INSERT INTO Employees (EmployeeID, FirstName, LastName, Department, Salary, DateOfJoining)
+                  VALUES (2, 'Jane', 'Smith', 'Finance', 60000.00, '2023-02-20')''')
+
+# Update an employee's salary
+cursor.execute('''UPDATE Employees SET Salary = 65000.00 WHERE EmployeeID = 2''')
+
+# Delete an employee record
+cursor.execute('''DELETE FROM Employees WHERE EmployeeID = 1''')
+
+# Select all data from the Employees table
+cursor.execute('''SELECT * FROM Employees''')
+rows = cursor.fetchall()
+print("Employees data:")
+for row in rows:
+    print(row)
+
+# 3. TCL Commands
+
+# Start a new transaction
+conn.execute('BEGIN TRANSACTION')
+
+# Insert a new employee
+cursor.execute('''INSERT INTO Employees (EmployeeID, FirstName, LastName, Department, Salary, DateOfJoining)
+                  VALUES (3, 'Alice', 'Johnson', 'IT', 70000.00, '2023-03-10')''')
+
+# Commit the transaction
+conn.commit()
+
+# 4. DCL Commands (Note: SQLite doesn't fully support DCL commands like GRANT and REVOKE)
+# In a database that supports DCL (e.g., MySQL, PostgreSQL), you would do:
+# cursor.execute('''GRANT SELECT ON Employees TO 'username' ''')
+# cursor.execute('''REVOKE SELECT ON Employees FROM 'username' ''')
+
+# Close the connection
+conn.close()
